@@ -7,3 +7,7 @@ Version: 1.0
 body {
   color: orange;
 }
+
+.current-menu-item > a {
+  color: rgb(66, 14, 185) !important;
+}
