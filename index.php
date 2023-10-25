@@ -11,7 +11,7 @@ pageBanner(array(
 <div class="container container--narrow page-section">
     <?php
     $count = 0;
-    while ($count < 2 && have_posts()) {
+    while ($count < 10 && have_posts()) {
         the_post();
         $count++;
     ?>
