@@ -1,6 +1,24 @@
 <?php
 require_once 'includes/html_helpers.php';
+require get_theme_file_path('/includes/search-route.php');
 
+
+
+
+
+function uni_custom_rest()
+{
+    register_rest_field('post', 'authorName', array(
+        'get_callback' => function () {
+            return get_the_author();
+        }
+    ));
+}
+
+
+
+
+add_action('rest_api_init', 'uni_custom_rest');
 
 function pageBanner($args = [])
 
@@ -51,6 +69,7 @@ function pageBanner($args = [])
 // course specifics
 function uni_files()
 {
+    $mv = 66;
     wp_enqueue_script('main-uni-js', get_theme_file_uri('/build/index.js'), array('jquery'), '1.0', true);
     wp_enqueue_style('custom-google', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
     wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
