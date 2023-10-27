@@ -14,7 +14,7 @@ class Search {
   }
 
   anyIsFocused() {
-    return document.activeElement.tagName === 'INPUT';
+    return document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA';
   }
 
   events() {

@@ -1,17 +1,34 @@
 <?php
 
+/**
+ * Registers the search route for the Uni API.
+ */
 add_action('rest_api_init', 'uniRegisterSearch');
-
+/**
+ * Registers the search route for the Uni API.
+ */
 function uniRegisterSearch()
 {
+
     register_rest_route('uni/v1', 'search', array(
         'methods' => WP_REST_SERVER::READABLE,
         'callback' => 'uniSearchResults'
     ));
 }
 
+
+/**
+ * uniSearchResults function
+ * 
+ * This function performs a search query across multiple post types
+ * and returns an array of results grouped by post type.
+ *
+ * @param array $data The search term to be used in the query.
+ * @return array An array of search results grouped by post type.
+ */
 function uniSearchResults($data)
 {
+    // uni/v1/search?term= 5151
     $mainQuery = new WP_Query(array(
         'post_type' => array('professor', 'post', 'page', 'program', 'event'),
         's' => sanitize_text_field($data['term'])
@@ -23,8 +40,10 @@ function uniSearchResults($data)
         'programs' => array(),
         'events' => array()
     );
+
     while ($mainQuery->have_posts()) {
         $mainQuery->the_post();
+
         if (get_post_type() === 'post' or get_post_type() === 'page') {
             array_push($results['generalInfo'], array(
                 'title' => get_the_title(),
