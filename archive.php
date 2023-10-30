@@ -1,3 +1,6 @@
+<!-- 
+    controls-path: "/blog/" 
+ -->
 <?php
 require_once 'functions.php';
 
@@ -36,14 +39,7 @@ pageBanner(array(
         </div>
     <?php
     }
-
-
-    echo paginate_links();
-
-
-
-
-
+    echo paginate_links(); // wordpress knows what page we are on and will add the correct links
     ?>
 
 

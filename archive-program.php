@@ -1,3 +1,6 @@
+<!-- 
+    controls-path: "/program/"
+ -->
 <?php
 require_once 'functions.php';
 

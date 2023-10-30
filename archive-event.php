@@ -1,3 +1,8 @@
+<!-- 
+    controls-path: "/events/"
+    displays all coming events
+ -->
+
 <?php
 require_once 'functions.php';
 

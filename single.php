@@ -1,5 +1,8 @@
+<!-- 
+    This is the template for the single post
+ -->
+
 <?php
-require_once 'functions.php';
 
 get_header();
 

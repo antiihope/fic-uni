@@ -36,22 +36,9 @@ pageBanner(array(
     <?php
     }
 
-
     echo paginate_links();
 
-
-
-
-
     ?>
-
-
-
-
-
-
-
-
 
 </div>
 <?php

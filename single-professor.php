@@ -15,11 +15,15 @@ while (have_posts()) {
         <div class="generic-content">
             <div class="raw group">
                 <div class="one-third">
-                    <?php the_post_thumbnail('professorPortrait'); ?>
+                    <?php
+                    // professorPortrait is the name of the custom image size we created in functions.php
+                    the_post_thumbnail('professorPortrait');
+                    ?>
 
                 </div>
                 <div class="two-thirds">
                     <?php
+                    // not completed, but we are trying to display the like button and the number of likes
                     $likeCount = new WP_Query(array(
                         'post_type' => 'like',
                         'meta_query' => array(
@@ -30,6 +34,8 @@ while (have_posts()) {
                             )
                         )
                     ));
+                    // check if the current user has liked the current professor
+                    // if yes, then we want to display the full heart icon
                     $existStatus = 'no';
                     $existQuery = new WP_Query(array(
                         'author' => get_current_user_id(),
@@ -57,6 +63,8 @@ while (have_posts()) {
                 </div>
             </div>
             <?php
+            // get the array of pages that are related to the current page
+            // we added the relation through custom fields in the admin panel
             $relatedPrograms = get_field('related_programs');
             if ($relatedPrograms) {
                 echo '<hr class="section-break">';

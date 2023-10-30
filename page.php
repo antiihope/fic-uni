@@ -1,12 +1,9 @@
 <?php
-require_once 'functions.php';
-
 
 get_header();
 
 while (have_posts()) {
     the_post();
-    html_out('hr');
     pageBanner();
 ?>
 
@@ -19,7 +16,9 @@ while (have_posts()) {
         ?>
             <div class="metabox metabox--position-up metabox--with-home-link">
                 <p>
-                    <a class="metabox__blog-home-link" href="<?php echo get_permalink($parent_id); ?>"><i class="fa fa-home" aria-hidden="true"></i> Back to <?php echo get_the_title($parent_id); ?></a> <span class="metabox__main">
+                    <a class="metabox__blog-home-link" href="<?php echo get_permalink($parent_id); ?>">
+                        <i class="fa fa-home" aria-hidden="true">
+                        </i> Back to <?php echo get_the_title($parent_id); ?></a> <span class="metabox__main">
                         <?php the_title(); ?>
                     </span>
                 </p>
@@ -29,9 +28,11 @@ while (have_posts()) {
         ?>
 
         <?php
-        $test_array = get_pages(array('child_of' => get_the_ID()));
+        // get the array of pages that are related to the current page
+        // we added the relation through a page attribute 'parent page' in the admin panel
+        $related_pages = get_pages(array('child_of' => get_the_ID()));
 
-        if ($parent_id or $test_array) { ?>
+        if ($parent_id or $related_pages) { ?>
 
 
             <div class="page-links">
@@ -45,11 +46,14 @@ while (have_posts()) {
                     </a></h2>
                 <ul class="min-list">
                     <?php
+                    // if the current page has a parent page, then we want to show the children of the parent page
+                    // otherwise we want to show the children of the current page
                     if ($parent_id) {
                         $find_children_of = $parent_id;
                     } else {
                         $find_children_of = get_the_ID();
                     }
+                    // list the children of the current page
                     wp_list_pages(array(
                         'title_li' => NULL,
                         'child_of' => $find_children_of,
@@ -67,9 +71,6 @@ while (have_posts()) {
 
     <div class="page-section page-section--beige">
         <div class="container container--narrow generic-content">
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia voluptates vero vel temporibus aliquid possimus, facere accusamus modi. Fugit saepe et autem, laboriosam earum reprehenderit illum odit nobis, consectetur dicta. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos molestiae, tempora alias atque vero officiis sit commodi ipsa vitae impedit odio repellendus doloremque quibusdam quo, ea veniam, ad quod sed.</p>
-
-            <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit. Officia voluptates vero vel temporibus aliquid possimus, facere accusamus modi. Fugit saepe et autem, laboriosam earum reprehenderit illum odit nobis, consectetur dicta. Lorem ipsum dolor sit amet, consectetur adipisicing elit. Quos molestiae, tempora alias atque vero officiis sit commodi ipsa vitae impedit odio repellendus doloremque quibusdam quo, ea veniam, ad quod sed.</p>
         </div>
     </div>
 <?php

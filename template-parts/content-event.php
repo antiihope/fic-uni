@@ -1,3 +1,8 @@
+<!-- 
+    custom html for the event field, because it's repeated too often, we can call this file and pass the data
+    with get_template_part('template-parts/content',file-name);
+ -->
+
 <div class="event-summary">
     <a class="event-summary__date event-summary__date t-center" href="#">
         <span class="event-summary__month">

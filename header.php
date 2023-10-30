@@ -1,17 +1,17 @@
-<?php $true_story = 'Ahmad is cool and VScode.pro is awesome!';
-
-?>
-
 <html lang="en">
 
-<head <?php language_attributes() ?>>
+<head <?php language_attributes()  // this function will add the language attribute to the html tag
+        ?>>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <?php wp_head() ?>
 </head>
 
 
-<body <?php body_class() ?>>
+<body <?php
+        body_class()
+        // php/wordpress has this function to add classes to the body tag so wordpress can style it and identify it
+        ?>>
     <header class="site-header">
         <div class="container">
             <h1 class="school-logo-text float-left">
@@ -26,6 +26,9 @@
             <div class="site-header__menu group">
                 <nav class="main-navigation">
 
+                    <!-- 
+                        this is bascially for highlighting the current page if it is in the menu
+                     -->
                     <ul>
                         <li <?php if (is_page('about-us') or wp_get_post_parent_id(0) == 100) echo 'class="current-menu-item"' ?>>
                             <a href="<?php echo site_url("/about-us") ?>">About Us</a>
@@ -36,8 +39,12 @@
                         <li><a href="#">Campuses</a></li>
                         <li <?php if (get_post_type() == 'post') echo 'class="current-menu-item"' ?>><a href="<?php echo site_url('/blog'); ?>">Blog</a></li>
                     </ul>
+
                 </nav>
                 <div class="site-header__util">
+                    <!-- 
+                     only show the buttons if the user is logged in
+                     -->
                     <?php
                     if (is_user_logged_in()) {
                     ?>

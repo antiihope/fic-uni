@@ -35,7 +35,3 @@ function get_html(
     }
     return "<$type " . $attrs_string . ">$content</$type>";
 }
-
-
-// html_out("h2", [], "Hello World"); // echos <h2>Hello World</h2>
-// get_html("h2", [], "Hello World"); // returns <h2>Hello World</h2>

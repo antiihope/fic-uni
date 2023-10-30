@@ -5,14 +5,15 @@ require get_theme_file_path('/includes/search-route.php');
 
 
 
-
 function uni_custom_rest()
 {
+    // tells wordpress that we want to add a new field to the rest api
     register_rest_field('post', 'authorName', array(
         'get_callback' => function () {
             return get_the_author();
         }
     ));
+    // on note post type, add a new field called userNoteCount
     register_rest_field('note', 'userNoteCount', array(
         'get_callback' => function () {
             return count_user_posts(get_current_user_id(), 'note');
@@ -20,14 +21,14 @@ function uni_custom_rest()
     ));
 }
 
-
-
-
-add_action('rest_api_init', 'uni_custom_rest');
+add_action('rest_api_init', 'uni_custom_rest'); // hook into rest api initialization
 
 function pageBanner($args = [])
-
 {
+    // this function will be called in the header of each page
+    // it will display a banner with the page title and subtitle
+    // if no title or subtitle is provided, it will use the default values
+    // if no photo is provided, it will use the default photo
     if (!$args['title']) {
         $args['title'] = get_the_title();
     }
@@ -47,7 +48,6 @@ function pageBanner($args = [])
         <div class="page-banner__bg-image" style="background-image: url(
             <?php
             echo $args['photo'];
-
             ?>">
         </div>
         <div class="page-banner__content container container--narrow">
@@ -60,9 +60,7 @@ function pageBanner($args = [])
                 <p>
                     <?php
                     echo $args['subtitle'];
-
                     ?>
-
                 </p>
             </div>
         </div>
@@ -74,13 +72,15 @@ function pageBanner($args = [])
 // course specifics
 function uni_files()
 {
-    $mv = 66;
+    // load css and js files
     wp_enqueue_script('main-uni-js', get_theme_file_uri('/build/index.js'), array('jquery'), '1.0', true);
     wp_enqueue_style('custom-google', '//fonts.googleapis.com/css?family=Roboto+Condensed:300,300i,400,400i,700,700i|Roboto:100,300,400,400i,700,700i');
     wp_enqueue_style('font-awesome', '//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css');
     wp_enqueue_style('uni_main_styles', get_theme_file_uri('/build/style-index.css'));
     wp_enqueue_style('uni_extra_styles', get_theme_file_uri('/build/index.css'));
 
+
+    // pass data to javascript, here we pass the root url and a nonce
     wp_localize_script('main-uni-js', 'uniData', array(
         'root_url' => get_site_url(),
         'nonce' => wp_create_nonce('wp_rest'),
@@ -88,11 +88,12 @@ function uni_files()
 }
 
 
-add_action('wp_enqueue_scripts', 'uni_files');
+add_action('wp_enqueue_scripts', 'uni_files'); // hook into wp_enqueue_scripts
 
 
 function uni_features()
 {
+    // register navigation menus
     register_nav_menu('headerMenuLocation', 'Header Menu Location');
     register_nav_menu('footLocationOne',  'Footer Location One');
     register_nav_menu('footerLocationTwo', 'Footer Location Two');
@@ -108,6 +109,13 @@ add_action('after_setup_theme', 'uni_features');
 
 function university_adjust_queries($query)
 {
+    // this function will be called before wordpress runs the query
+    // we can use it to modify the query
+    // we will use it to sort the programs alphabetically
+    // we will also use it to sort the events by event date
+
+
+
     if (!is_admin() and is_post_type_archive('program') and $query->is_main_query()) {
         $query->set('orderby', 'title');
         $query->set('order', 'ASC');
@@ -131,12 +139,14 @@ function university_adjust_queries($query)
     }
 }
 
-add_action('pre_get_posts', 'university_adjust_queries');
+add_action('pre_get_posts', 'university_adjust_queries'); // hook into pre_get_posts, means before getting posts, run this function
 
 
-add_action('admin_init', 'redirectSubsToFrontend');
 function redirectSubsToFrontend()
 {
+    // this function will be called when a user logs in
+    // if the user is a subscriber, redirect them to the homepage
+    // a subscriber should not be able to access the admin area
     $ourCurrentUser = wp_get_current_user();
     if (count($ourCurrentUser->roles) == 1 and $ourCurrentUser->roles[0] == 'subscriber') {
         wp_redirect(site_url('/'));
@@ -144,25 +154,33 @@ function redirectSubsToFrontend()
     }
 }
 
+add_action('admin_init', 'redirectSubsToFrontend'); // hook into admin_init, means when the admin area is initialized, run this function
 
 
-add_action('wp_loaded', 'noSubsAdminBar');
+
 function noSubsAdminBar()
 {
+    // this function will be called when a user logs in
+    // if the user is a subscriber, hide the admin bar
+    // a subscriber should not be able to access the admin area
     $ourCurrentUser = wp_get_current_user();
     if (count($ourCurrentUser->roles) == 1 and $ourCurrentUser->roles[0] == 'subscriber') {
         show_admin_bar(false);
     }
 }
 
+add_action('wp_loaded', 'noSubsAdminBar'); // hook into wp_loaded, means when wordpress is loaded, run this function
+
 
 
 // customize login screen
-add_filter('login_headerurl', 'ourHeaderUrl');
-function ourHeaderUrl()
-{
-    return esc_url(site_url('/'));
-}
+add_filter(
+    'login_headerurl',
+    function () {
+        return esc_url(site_url('/'));
+    }
+);
+
 
 
 add_action('login_enqueue_scripts', 'ourLoginCSS');
@@ -174,22 +192,32 @@ function ourLoginCSS()
     wp_enqueue_style('uni_extra_styles', get_theme_file_uri('/build/index.css'));
 }
 
-add_filter('login_headertitle', 'ourLoginTitle');
-function ourLoginTitle()
-{
-    return get_bloginfo('name');
-}
+
+add_filter(
+    'login_headertitle',
+    function () {
+        // change the title of the login screen
+        return get_bloginfo('name');
+    }
+);
+
 
 
 // force note posts to be private
-add_filter('wp_insert_post_data', 'makeNotePrivate', 10, 2);
+
 
 function makeNotePrivate($data, $postarr)
 {
+    // this function will be called when a post is inserted or updated
+    // if the post type is note, make it private
+    // if the post type is note and the post status is not trash, make it private
+    // if the user has more than 4 notes, don't allow them to create a new note
+
     if ($data['post_type'] == 'note') {
         if (count_user_posts(get_current_user_id(), 'note') > 4 and !$postarr['ID']) {
             die("You have reached your note limit.");
         }
+
         $data['post_content'] = sanitize_textarea_field($data['post_content']);
         $data['post_title'] = sanitize_text_field($data['post_title']);
     }
@@ -198,3 +226,5 @@ function makeNotePrivate($data, $postarr)
     }
     return $data;
 }
+
+add_filter('wp_insert_post_data', 'makeNotePrivate', 10, 2); // hook into wp_insert_post_data, means when a post is inserted or updated, run this function

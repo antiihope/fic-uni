@@ -10,6 +10,7 @@ pageBanner(array(
 
 <div class="container container--narrow page-section">
     <?php
+    // Custom query for past events
     $count = 0;
     $pastEvents = new WP_Query(array(
         'paged' => get_query_var('paged', 1),
@@ -34,16 +35,13 @@ pageBanner(array(
     }
 
 
+    // because we are using a custom query, the pagination links will not work on its own
+    // we need to pass the total number of pages to paginate_links()
     echo paginate_links(
         array(
             'total' => $pastEvents->max_num_pages
         )
     );
-
-
-
-
-
     ?>
 
 

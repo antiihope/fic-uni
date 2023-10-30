@@ -1,3 +1,4 @@
+<!-- controls program page -->
 <?php
 require_once 'functions.php';
 
@@ -13,7 +14,6 @@ while (have_posts()) {
             <p>
                 <a class="metabox__blog-home-link" href="<?php echo
                                                             get_post_type_archive_link('program');
-
                                                             ?>">
                     <i class="fa fa-home" aria-hidden="true"></i> All programs</a> <span class="metabox__main">
                     <?php the_title() ?>
@@ -28,6 +28,7 @@ while (have_posts()) {
 
 
         <?php
+        // Related professors, also added through a custom field in the admin panel
         $relatedProfessors = new WP_Query(array(
             'posts_per_page' => -1,
             'post_type' => 'professor',
@@ -63,6 +64,7 @@ while (have_posts()) {
         }
 
 
+        // since we are using a custom query, we need to reset the post data
         wp_reset_postdata();
 
 
