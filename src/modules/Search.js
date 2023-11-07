@@ -118,9 +118,6 @@ class Search {
 
 </div>
               
-              
-              
-              
               `
                 )
                 .join('')}

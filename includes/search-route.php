@@ -56,7 +56,10 @@ function uniSearchResults($data)
             array_push($results['professors'], array(
                 'title' => get_the_title(),
                 'permalink' => get_the_permalink(),
-                'image' => get_the_post_thumbnail_url(0, 'professorLandscape')
+                'image' => get_the_post_thumbnail_url(0, 'professorLandscape'),
+                'meta' => array(
+                    'relatedPrograms' => get_field('related_programs')
+                )
             ));
         }
         if (get_post_type() === 'program') {
@@ -86,10 +89,14 @@ function uniSearchResults($data)
     }
 
 
+    // Check if there are any programs in the search results
     if ($results['programs']) {
+        // Create an array to hold the meta queries for related programs
         $programsMetaQuery = array('relation' => 'OR');
 
+        // Loop through each program in the search results
         foreach ($results['programs'] as $item) {
+            // Add a meta query for each related program
             array_push($programsMetaQuery, array(
                 'key' => 'related_programs',
                 'compare' => 'LIKE',
@@ -97,16 +104,18 @@ function uniSearchResults($data)
             ));
         }
 
+        // Query for posts that have a relationship with any of the related programs
         $programRelationshipQuery = new WP_Query(array(
             'post_type' => array('professor', 'event'),
             'meta_query' => $programsMetaQuery
         ));
 
-
+        // Loop through each post in the query results
         while ($programRelationshipQuery->have_posts()) {
 
             $programRelationshipQuery->the_post();
 
+            // If the post is an event, add it to the events array
             if (get_post_type() === 'event') {
                 $eventDate = new DateTime(get_field('event_date'));
                 $description = null;
@@ -124,6 +133,7 @@ function uniSearchResults($data)
                 ));
             }
 
+            // If the post is a professor, add it to the professors array
             if (get_post_type() === 'professor') {
                 array_push($results['professors'], array(
                     'title' => get_the_title(),
@@ -133,8 +143,28 @@ function uniSearchResults($data)
             }
         }
 
+        // Remove any duplicates from the professors and events arrays
         $results['professors'] = array_values(array_unique($results['professors'], SORT_REGULAR));
         $results['events'] = array_values(array_unique($results['events'], SORT_REGULAR));
+    }
+
+    $hold = $results['professors'];
+
+    if ($results['professors'] && !$results['programs']) {
+        // Loop through each professor in the search results
+        foreach ($results['professors'] as $item) {
+            $programId = $item['meta']['relatedPrograms'][0]->ID;
+            $program = get_post($programId);
+            $programData = array(
+                'title' => $program->post_title,
+                'permalink' => get_the_permalink($programId)
+            );
+            $results['programs'][] = $programData;
+        }
+
+
+        // Remove any duplicates from the programs array
+        $results['programs'] = array_values(array_unique($results['programs'], SORT_REGULAR));
     }
     return $results;
 }
