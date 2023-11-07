@@ -37,22 +37,27 @@ while (have_posts()) {
                     // check if the current user has liked the current professor
                     // if yes, then we want to display the full heart icon
                     $existStatus = 'no';
-                    $existQuery = new WP_Query(array(
-                        'author' => get_current_user_id(),
-                        'post_type' => 'like',
-                        'meta_query' => array(
-                            array(
-                                'key' => 'liked_professor_id',
-                                'compare' => '=',
-                                'value' => get_the_ID()
+                    if (is_user_logged_in()) {
+                        $existQuery = new WP_Query(array(
+                            'author' => get_current_user_id(),
+                            'post_type' => 'like',
+                            'meta_query' => array(
+                                array(
+                                    'key' => 'liked_professor_id',
+                                    'compare' => '=',
+                                    'value' => get_the_ID()
+                                )
                             )
-                        )
-                    ));
-                    if ($existQuery->found_posts) {
-                        $existStatus = 'yes';
+                        ));
+                        if ($existQuery->found_posts) {
+                            $existStatus = 'yes';
+                        }
                     }
+
                     ?>
-                    <span class="like-box" data-exists="<?php echo $existStatus; ?>">
+                    <span class="like-box" data-exists="<?php echo $existStatus; ?>" data-professor="<?php echo get_the_ID(); ?>" data-like="<?php if (isset($existQuery->posts[0]->ID)) echo $existQuery->posts[0]->ID; ?>">
+
+
                         <i class="fa fa-heart-o" aria-hidden="true"></i>
                         <i class="fa fa-heart" aria-hidden="true"></i>
                         <span class="like-count">

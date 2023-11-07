@@ -25,8 +25,6 @@ while (have_posts()) {
         </div>
 
 
-
-
         <?php
         // Related professors, also added through a custom field in the admin panel
         $relatedProfessors = new WP_Query(array(
